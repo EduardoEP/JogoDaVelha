@@ -1,17 +1,18 @@
 import { useState, useEffect } from 'react'
 import './App.css'
+import ConfettiGenerator from 'confetti-js'
 
 function App() {
   const initialValue = [
-    { id: '1.1', value: '' },
-    { id: '1.2', value: '' },
-    { id: '1.3', value: '' },
-    { id: '2.1', value: '' },
-    { id: '2.2', value: '' },
-    { id: '2.3', value: '' },
-    { id: '3.1', value: '' },
-    { id: '3.2', value: '' },
-    { id: '3.3', value: '' },
+    { value: '' },
+    { value: '' },
+    { value: '' },
+    { value: '' },
+    { value: '' },
+    { value: '' },
+    { value: '' },
+    { value: '' },
+    { value: '' },
   ]
   const [data, setData] = useState(initialValue)
   const [draw, setDraw] = useState(false)
@@ -31,6 +32,21 @@ function App() {
     [0, 4, 8],
     [2, 4, 6],
   ]
+
+  useEffect(() => {
+    if (winner !== '') {
+      const confettiSettings = { target: 'my-canvas' }
+      confettiSettings.rotate = 'true'
+      confettiSettings.start_from_edge = 'true'
+      confettiSettings.clock = '35'
+      // confettiSettings.width = '1280'
+      // confettiSettings.height = '920'
+      const confetti = new ConfettiGenerator(confettiSettings)
+      confetti.render()
+
+      return () => confetti.clear()
+    }
+  }, [winner])
 
   function handleClick(key) {
     if (data[key].value !== '' || winner !== '' || draw) {
@@ -74,6 +90,12 @@ function App() {
 
   return (
     <div className="main">
+      <canvas id="my-canvas"></canvas>
+      <div className="players">
+        <div className={`player ${player ? 'active' : ''}`}>player1</div>
+        <div className={`player ${!player ? 'active' : ''}`}>player2</div>
+      </div>
+
       <div className="frame">
         <div className="table">
           {data.map((item, key) => (
@@ -89,22 +111,25 @@ function App() {
         ) : null}
         {winner !== '' ? (
           <div className="popUp">
-            <p>{winner} é o vencedor 🎊🎊🎊</p>
+            <p>🎊🎊🎊🎊🎊🎊</p>
+            <p>{winner} é o vencedor!!</p>
           </div>
         ) : null}
       </div>
 
-      <button
-        className="reset"
-        onClick={() => {
-          setData(initialValue)
-          setDraw(false)
-          setPlayer(true)
-          setWinner('')
-        }}
-      >
-        Reiniciar Jogo
-      </button>
+      {winner !== '' || draw ? (
+        <button
+          className="reset"
+          onClick={() => {
+            setData(initialValue)
+            setDraw(false)
+            setPlayer(true)
+            setWinner('')
+          }}
+        >
+          Reiniciar Jogo
+        </button>
+      ) : null}
     </div>
   )
 }
