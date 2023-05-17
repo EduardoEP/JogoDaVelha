@@ -18,6 +18,8 @@ function App() {
   const [draw, setDraw] = useState(false)
   const [player, setPlayer] = useState(true)
   const [winner, setWinner] = useState('')
+  const [winsPlayer1, setWinsPlayer1] = useState(0)
+  const [winsPlayer2, setWinsPlayer2] = useState(0)
 
   const possibilities = [
     // horizontais
@@ -39,8 +41,6 @@ function App() {
       confettiSettings.rotate = 'true'
       confettiSettings.start_from_edge = 'true'
       confettiSettings.clock = '35'
-      // confettiSettings.width = '1280'
-      // confettiSettings.height = '920'
       const confetti = new ConfettiGenerator(confettiSettings)
       confetti.render()
 
@@ -76,6 +76,7 @@ function App() {
         data[value[2]].value === '❌'
       ) {
         newWinner = 'Player1'
+        setWinsPlayer1(winsPlayer1 + 1)
       }
       if (
         data[value[0]].value === '⭕' &&
@@ -83,6 +84,7 @@ function App() {
         data[value[2]].value === '⭕'
       ) {
         newWinner = 'Player2'
+        setWinsPlayer2(winsPlayer2 + 1)
       }
     }
     setWinner(newWinner)
@@ -92,44 +94,59 @@ function App() {
     <div className="main">
       <canvas id="my-canvas"></canvas>
       <div className="players">
-        <div className={`player ${player ? 'active' : ''}`}>player1</div>
-        <div className={`player ${!player ? 'active' : ''}`}>player2</div>
-      </div>
-
-      <div className="frame">
-        <div className="table">
-          {data.map((item, key) => (
-            <button key={key} className="cell" onClick={() => handleClick(key)}>
-              {item.value}
-            </button>
-          ))}
+        <div className={`player ${player ? 'active' : ''}`}>
+          {' '}
+          player1
+          <span className="playerWins">{winsPlayer1}</span>
         </div>
-        {draw ? (
-          <div className="popUp">
-            <p>O jogo empatou</p>
-          </div>
-        ) : null}
-        {winner !== '' ? (
-          <div className="popUp">
-            <p>🎊🎊🎊🎊🎊🎊</p>
-            <p>{winner} é o vencedor!!</p>
-          </div>
-        ) : null}
+        <div className={`player ${!player ? 'active' : ''}`}>
+          player2
+          <span className="playerWins">{winsPlayer2}</span>
+        </div>
       </div>
 
-      {winner !== '' || draw ? (
-        <button
-          className="reset"
-          onClick={() => {
-            setData(initialValue)
-            setDraw(false)
-            setPlayer(true)
-            setWinner('')
-          }}
-        >
-          Reiniciar Jogo
-        </button>
-      ) : null}
+      <div className="content">
+        <div className="frame">
+          <div className="table">
+            {data.map((item, key) => (
+              <button
+                key={key}
+                className="cell"
+                onClick={() => handleClick(key)}
+              >
+                {item.value}
+              </button>
+            ))}
+          </div>
+          {draw ? (
+            <div className="popUp">
+              <p>O jogo empatou</p>
+            </div>
+          ) : null}
+          {winner !== '' ? (
+            <div className="popUp">
+              <p>🎊🎊🎊🎊🎊🎊</p>
+              <p>{winner} é o vencedor!!</p>
+            </div>
+          ) : null}
+        </div>
+
+        <div className="reset">
+          {winner !== '' || draw ? (
+            <button
+              className="reset"
+              onClick={() => {
+                setData(initialValue)
+                setDraw(false)
+                setPlayer(true)
+                setWinner('')
+              }}
+            >
+              Reiniciar Jogo
+            </button>
+          ) : null}
+        </div>
+      </div>
     </div>
   )
 }
