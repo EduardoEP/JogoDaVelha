@@ -17,6 +17,7 @@ function App() {
   const [data, setData] = useState(initialValue)
   const [draw, setDraw] = useState(false)
   const [player, setPlayer] = useState(true)
+  const [turn, setTurn] = useState(false)
   const [winner, setWinner] = useState('')
   const [winsPlayer1, setWinsPlayer1] = useState(0)
   const [winsPlayer2, setWinsPlayer2] = useState(0)
@@ -55,7 +56,7 @@ function App() {
 
     setData((tempData) => {
       if (tempData[key].value === '') {
-        tempData[key].value = player ? '❌' : '⭕'
+        tempData[key].value = player ? '✖️' : '⭕'
       }
       return tempData
     })
@@ -71,9 +72,9 @@ function App() {
     let newWinner = ''
     for (let value of possibilities) {
       if (
-        data[value[0]].value === '❌' &&
-        data[value[1]].value === '❌' &&
-        data[value[2]].value === '❌'
+        data[value[0]].value === '✖️' &&
+        data[value[1]].value === '✖️' &&
+        data[value[2]].value === '✖️'
       ) {
         newWinner = 'Player1'
         setWinsPlayer1(winsPlayer1 + 1)
@@ -138,7 +139,8 @@ function App() {
               onClick={() => {
                 setData(initialValue)
                 setDraw(false)
-                setPlayer(true)
+                setTurn(!turn)
+                setPlayer(turn)
                 setWinner('')
               }}
             >
